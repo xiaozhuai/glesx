@@ -1,0 +1,9 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+if (@WITH_ANGLE@)
+    find_dependency(unofficial-angle CONFIG)
+endif()
+
+include(${CMAKE_CURRENT_LIST_DIR}/glesx-targets.cmake)
