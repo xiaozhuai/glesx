@@ -21,10 +21,12 @@ elseif (ANDROID)
 elseif (UNIX AND NOT APPLE)
     # EGL
     add_library(EGL INTERFACE)
-    target_link_options(EGL INTERFACE -lEGL)
+    find_library(EGL_LIBRARY NAMES EGL REQUIRED)
+    target_link_libraries(EGL INTERFACE ${EGL_LIBRARY})
     # GLESv2
     add_library(GLESv2 INTERFACE)
-    target_link_options(GLESv2 INTERFACE -lGLESv2)
+    find_library(GLESv2_LIBRARY NAMES GLESv2 REQUIRED)
+    target_link_libraries(GLESv2 INTERFACE ${GLESv2_LIBRARY})
 elseif (IOS)
     # GLESv2
     install(FILES "ios/include/GLES2/gl2.h" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/GLES2")
@@ -39,19 +41,9 @@ elseif (WIN32 OR APPLE)
     find_package(unofficial-angle CONFIG REQUIRED)
     # EGL
     add_library(EGL INTERFACE)
-    find_path(EGL_INCLUDE_DIR EGL/egl.h PATH_SUFFIXES include REQUIRED)
-    target_include_directories(EGL INTERFACE 
-        "$<BUILD_INTERFACE:${EGL_INCLUDE_DIR}>"
-        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-    )
     target_link_libraries(EGL INTERFACE unofficial::angle::libEGL)
     # GLESv2
     add_library(GLESv2 INTERFACE)
-    find_path(GLESv3_INCLUDE_DIR GLES3/gl3.h PATH_SUFFIXES include REQUIRED)
-    target_include_directories(GLESv2 INTERFACE 
-        "$<BUILD_INTERFACE:${GLESv3_INCLUDE_DIR}>"
-        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-    )
     target_link_libraries(GLESv2 INTERFACE unofficial::angle::libGLESv2)
 else ()
     message(FATAL_ERROR "Unsupported platform")
